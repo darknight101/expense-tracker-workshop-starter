@@ -81,6 +81,16 @@ function createInitialTransactions() {
 const sumCents = (items) =>
   items.reduce((sum, item) => sum + Math.round(item.amount * 100), 0);
 const formatMoney = (cents) => `$${(cents / 100).toFixed(2)}`;
+const validateMoneyInput = (input) => {
+  const value = Number(input);
+  return (
+    input.trim() &&
+    /^(?:\d+|\d*\.\d{1,2})$/.test(input) &&
+    Number.isFinite(value) &&
+    value > 0 &&
+    value <= 1_000_000
+  );
+};
 
 function App() {
   const [transactions, setTransactions] = useState(createInitialTransactions);
@@ -112,6 +122,27 @@ function App() {
   );
   const balanceCents = totalIncomeCents - totalExpensesCents;
 
+  // Calculate monthly spent for current month
+  const now = new Date();
+  const currentMonthSpentCents = sumCents(
+    transactions.filter((t) => {
+      if (t.type !== "expense") return false;
+      const transactionDate = new Date(t.date);
+      return (
+        transactionDate.getUTCFullYear() === now.getUTCFullYear() &&
+        transactionDate.getUTCMonth() === now.getUTCMonth()
+      );
+    }),
+  );
+
+  // Calculate budget progress
+  const budgetCents = budget !== undefined ? Math.round(budget * 100) : null;
+  const budgetPercentage =
+    budgetCents !== null ? (currentMonthSpentCents / budgetCents) * 100 : 0;
+  const isOverBudget =
+    budgetCents !== null && currentMonthSpentCents > budgetCents;
+  const cappedPercentage = Math.min(budgetPercentage, 100);
+
   let filteredTransactions = transactions;
   if (filterType !== "all") {
     filteredTransactions = filteredTransactions.filter(
@@ -126,14 +157,10 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const value = Number(amount);
     if (
       !description.trim() ||
       description.trim().length > 120 ||
-      !/^(?:\d+|\d*\.\d{1,2})$/.test(amount) ||
-      !Number.isFinite(value) ||
-      value <= 0 ||
-      value > 1_000_000
+      !validateMoneyInput(amount)
     ) {
       setError(
         "Enter a description and an amount from $0.01 to $1000000.00, with at most two decimal places.",
@@ -144,7 +171,7 @@ function App() {
     const newTransaction = {
       id: crypto.randomUUID(),
       description: description.trim(),
-      amount: value,
+      amount: Number(amount),
       type,
       category,
       date: new Date().toISOString().slice(0, 10),
@@ -159,20 +186,13 @@ function App() {
 
   const handleBudgetSubmit = (e) => {
     e.preventDefault();
-    const value = Number(budgetInput);
-    if (
-      !budgetInput.trim() ||
-      !/^(?:\d+|\d*\.\d{1,2})$/.test(budgetInput) ||
-      !Number.isFinite(value) ||
-      value <= 0 ||
-      value > 1_000_000
-    ) {
+    if (!validateMoneyInput(budgetInput)) {
       setBudgetError(
         "Enter a positive amount from $0.01 to $1000000.00, with at most two decimal places.",
       );
       return;
     }
-    setBudget(value);
+    setBudget(Number(budgetInput));
     setBudgetInput("");
     setBudgetError("");
   };
@@ -204,9 +224,37 @@ function App() {
         {budget === undefined ? (
           <p className="subtitle">No budget set for this month</p>
         ) : (
-          <p className="budget-display">
-            Budget: {formatMoney(Math.round(budget * 100))}
-          </p>
+          <>
+            <p className="budget-display">
+              Budget: {formatMoney(Math.round(budget * 100))}
+            </p>
+            <div
+              className={`budget-progress ${isOverBudget ? "over-budget" : ""}`}
+              role="region"
+              aria-label="Budget progress"
+            >
+              <div
+                role="progressbar"
+                aria-valuenow={cappedPercentage}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                className={`progress-bar ${isOverBudget ? "over-budget" : ""}`}
+                style={{
+                  width: `${cappedPercentage}%`,
+                }}
+              />
+              <p className="progress-text">
+                {formatMoney(currentMonthSpentCents)} /{" "}
+                {formatMoney(budgetCents)}
+              </p>
+              {isOverBudget && (
+                <p className="overage-text">
+                  OVER BUDGET: +
+                  {formatMoney(currentMonthSpentCents - budgetCents)}
+                </p>
+              )}
+            </div>
+          </>
         )}
         <form onSubmit={handleBudgetSubmit} onChange={() => setBudgetError("")}>
           <label htmlFor="budget-input">

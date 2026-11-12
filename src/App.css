@@ -67,6 +67,35 @@ h2 {
   margin-bottom: 12px;
 }
 
+.budget-progress {
+  margin-bottom: 12px;
+}
+
+.progress-bar {
+  height: 24px;
+  background: #17623b;
+  border-radius: 3px;
+  margin-bottom: 8px;
+  transition: background-color 0.2s;
+}
+
+.progress-bar.over-budget {
+  background: #b3261e;
+}
+
+.progress-text {
+  font-size: 14px;
+  margin: 0;
+  color: #595959;
+}
+
+.overage-text {
+  font-size: 14px;
+  margin: 4px 0 0 0;
+  color: #b3261e;
+  font-weight: bold;
+}
+
 .add-transaction {
   border: 1px solid #bbb;
   padding: 16px;
