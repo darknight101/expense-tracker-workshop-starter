@@ -1,0 +1,17 @@
+{
+  "skill_name": "visual-code-review",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Review the expense tracker app homepage at http://127.0.0.1:5173/ using the visual-code-review skill. Check for any layout issues, console errors, or accessibility problems. Ticket URL: https://github.com/stcomiin/expense-tracker-workshop-starter/issues/1",
+      "expected_output": "A verification report with Lighthouse scores, screenshots of desktop and mobile viewports, console messages, and findings about the app's current state",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "Review the budget form feature implementation at http://127.0.0.1:5173/ using the visual-code-review skill. The app should show the budget tracking interface. Verify responsive design and check for any console errors. Ticket URL: https://github.com/stcomiin/expense-tracker-workshop-starter/issues/2",
+      "expected_output": "A verification report with desktop and mobile screenshots showing the budget form, Lighthouse audit results, and any layout or interaction issues",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "skill_name": "visual-code-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Verify the expense tracker at http://127.0.0.1:5173/ against these acceptance criteria: 1) Users can set a monthly budget via a form input, 2) A progress bar displays showing expenses spent vs total budget, 3) The progress bar updates dynamically when new transactions are added. Take screenshots showing the budget form, progress bar, and the update after adding a transaction.",
+      "expected_output": "A verification report folder with markdown report showing budget form works, progress bar displays correctly with accurate percentage, and dynamic updates are confirmed. Include 3+ screenshots demonstrating each feature.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Test the transaction filtering on the expense tracker. Verify: 1) Filter by transaction type (Income/Expense) works correctly, 2) Filter by category filters transactions properly, 3) Combined filters work as expected, 4) Unfiltered view shows all transactions, 5) Account totals remain unchanged regardless of filters. Create a report with screenshots showing each filter state.",
+      "expected_output": "Verification report confirming all filter combinations work, with screenshots showing: all transactions view, income-only view, expense-only view, category filter result, combined filter result, and verification that totals stay the same.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Verify the expense tracker is responsive and works on mobile (375x667) and desktop (1920x1080) viewports. Check that: 1) All form elements are accessible on mobile, 2) Tables are viewable with horizontal scroll hint, 3) No layout breaks occur, 4) All functionality (adding transactions, filtering) works on mobile. Provide desktop and mobile screenshots.",
+      "expected_output": "Verification report with desktop and mobile screenshots showing responsive layout, accessible forms, and functional UI across both viewports. All features confirmed working on both sizes.",
+      "files": []
+    }
+  ]
+}
